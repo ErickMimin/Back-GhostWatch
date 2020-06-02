@@ -1,27 +1,23 @@
 require('./config/config')
 const express = require('express');
-const app = express();
+const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+
+const app = express();
 
 /* Middle Wares */
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }))
- 
+app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
-app.use(bodyParser.json())
+app.use(bodyParser.json());
+/* Importamos controladores */
+app.use(require('./controllers/index'));
 
-app.get('/', function (req, res) {
-    res.json('Hello World');
+mongoose.connect('mongodb://' + process.env.MONGO_URI, (err, res) =>{
+    if(err) throw err;
+    console.log('Connection with mongoDB successful');
 });
-
-app.post('/process-image', function (req, res) {
-    let body = req.body;
-    res.json({
-        body
-    });
-});
-
  
 app.listen(process.env.PORT, () => {
-    console.log("Escuchando en el puerto: ", process.env.PORT);
+    console.log("Server starts in port: ", process.env.PORT);
 });
